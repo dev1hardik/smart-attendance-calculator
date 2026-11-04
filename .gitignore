@@ -1,0 +1,30 @@
+# Dependencies
+node_modules/
+attendify-mern/client/node_modules/
+attendify-mern/server/node_modules/
+
+# Production build
+dist/
+attendify-mern/client/dist/
+
+# Environment variables & secrets
+.env
+attendify-mern/server/.env
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS & Editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Internal agent metadata
+.agent/
+.agents/
+.gemini/
+.gsd/

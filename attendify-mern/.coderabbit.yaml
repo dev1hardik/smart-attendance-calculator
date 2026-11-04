@@ -1,0 +1,54 @@
+# CodeRabbit Automated Review & Security Rules for Attendify
+# Enforces JWT sanitization, Mongoose injection protection, and O(1) index usage
+
+reviews:
+  auto_review:
+    enabled: true
+    
+  rules:
+    # Security: JWT Header Sanitization
+    - name: jwt-header-check
+      description: "Ensure all /api/subjects routes use JWT auth middleware"
+      pattern: "router\\.(get|post|put|delete)\\("
+      conditions:
+        - must_contain: "protect"
+        - file_pattern: "routes/subjects.js"
+      
+    # Security: Mongoose Injection Protection  
+    - name: no-raw-user-input
+      description: "Prevent unsanitized user input in Mongoose queries"
+      pattern: "\\$where|\\$regex.*req\\.(body|params|query)"
+      action: "flag"
+      severity: "critical"
+      
+    # Performance: Index Usage
+    - name: compound-index-required
+      description: "Verify compound index on userId+code for O(log n) lookups"
+      pattern: "SubjectSchema\\.index"
+      conditions:
+        - must_contain: "userId"
+        - must_contain: "code"
+      
+    # Security: Password Never Exposed
+    - name: no-password-leak
+      description: "Ensure password field is never returned in API responses"
+      pattern: "select.*password|password.*select"
+      conditions:
+        - must_not_match: "select\\('-password'\\)|select\\({.*password:\\s*0"
+      
+    # Data Integrity: Target Criteria Bounds
+    - name: target-criteria-bounds
+      description: "Ensure targetCriteria is clamped between 50 and 95"
+      pattern: "targetCriteria"
+      conditions:
+        - must_contain: "min: 50"
+        - must_contain: "max: 95"
+
+  path_filters:
+    - "!node_modules/**"
+    - "!dist/**"
+    - "!.env"
+    
+  language_settings:
+    javascript:
+      max_file_size: 500
