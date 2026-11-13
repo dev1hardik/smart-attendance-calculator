@@ -1,0 +1,16 @@
+{
+  "name": "smart-attendance-calculator",
+  "version": "1.0.0",
+  "description": "Smart Attendance Calculator — ERP-Synced Attendance Intelligence Engine",
+  "private": true,
+  "scripts": {
+    "dev": "npm --prefix attendify-mern/client run dev",
+    "start": "npm --prefix attendify-mern/client run dev",
+    "client": "npm --prefix attendify-mern/client run dev",
+    "server": "npm --prefix attendify-mern/server run dev",
+    "build": "npm --prefix attendify-mern/client run build",
+    "test": "npm --prefix attendify-mern/server run test"
+  },
+  "author": "Hardik Singhal",
+  "license": "MIT"
+}
