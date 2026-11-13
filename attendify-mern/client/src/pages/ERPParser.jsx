@@ -4,7 +4,7 @@ import api from '../api/axios';
 import { parseERPClipboard, codeRabbitAudit, calculateERPStats } from '../utils/erpEngine';
 import toast from 'react-hot-toast';
 import {
-  ClipboardPaste,
+  Feather,
   ShieldCheck,
   CheckCircle2,
   AlertTriangle,
@@ -13,21 +13,22 @@ import {
   Trash2,
   BookOpen,
   FlaskConical,
-  Layers
+  Layers,
+  Sparkles
 } from 'lucide-react';
 
 const RAW_SAMPLE_ERP = `SNo\tSubject Code\tSubject Name\tType\tPresent\tOD\tMakeup\tAbsent\tConducted\t%
-1\tCRT\tCRT Lab\tLab\t60\t0\t6\t22\t82\t80.49
+1\tCRT\tCRT Practical Lab\tLab\t60\t0\t6\t22\t82\t80.49
 2\tCS501\tSoftware Engineering\tLecture\t27\t0\t0\t14\t41\t65.85
 3\tCS502\tComputer Networks\tLecture\t33\t0\t0\t9\t42\t78.57
 4\tCS503\tOperating Systems\tLecture\t26\t0\t0\t14\t40\t65.00
 5\tCS504\tTheory of Computation\tLecture\t25\t0\t0\t2\t27\t92.59
-6\tCS511\tData Analytics\tLecture\t35\t0\t0\t5\t40\t87.50
-7\tCS520\tSE Lab\tLab\t20\t0\t0\t8\t28\t71.43
-8\tCS521\tCN Lab\tLab\t12\t0\t0\t16\t28\t42.86
-9\tCS522\tOS Lab\tLab\t20\t0\t0\t6\t26\t76.92
-10\tCS523\tTOC Lab\tLab\t22\t0\t0\t6\t28\t78.57
-11\tCS530\tTutorial\tLab\t12\t0\t0\t2\t14\t85.71
+6\tCS511\tData Analytics & ML\tLecture\t35\t0\t0\t5\t40\t87.50
+7\tCS520\tSE Research Lab\tLab\t20\t0\t0\t8\t28\t71.43
+8\tCS521\tNetwork Protocol Lab\tLab\t12\t0\t0\t16\t28\t42.86
+9\tCS522\tOS Kernel Lab\tLab\t20\t0\t0\t6\t26\t76.92
+10\tCS523\tComputation Theory Lab\tLab\t22\t0\t0\t6\t28\t78.57
+11\tCS530\tAcademic Seminar\tLab\t12\t0\t0\t2\t14\t85.71
 12\tHU560\tUniversal Human Values\tLecture\t25\t0\t0\t15\t40\t62.50`;
 
 export default function ERPParser() {
@@ -39,16 +40,16 @@ export default function ERPParser() {
 
   const handleParse = (textToParse = rawText) => {
     if (!textToParse.trim()) {
-      toast.error('Please paste your ERP attendance data first');
+      toast.error('Please paste your portal attendance records first');
       return;
     }
     const subjects = parseERPClipboard(textToParse);
     if (subjects.length === 0) {
-      toast.error('Could not find valid subject rows in clipboard. Check format.');
+      toast.error('Could not identify valid tabular records in clipboard text.');
       return;
     }
     setParsedSubjects(subjects);
-    toast.success(`Successfully parsed & separated ${subjects.length} courses!`);
+    toast.success(`Parsed & structured ${subjects.length} course specimens!`);
   };
 
   const handleSample = () => {
@@ -66,12 +67,12 @@ export default function ERPParser() {
       const res = await api.post('/subjects/bulk-import', { subjects: parsedSubjects });
       localStorage.setItem('attendify_subjects', JSON.stringify(parsedSubjects));
       toast.success(
-        `Synced! Upserted: ${res.data.upsertedCount || 0}, Updated: ${res.data.modifiedCount || 0}`
+        `Synced to Atelier! (${res.data.upsertedCount || parsedSubjects.length} courses active)`
       );
       navigate('/');
     } catch {
       localStorage.setItem('attendify_subjects', JSON.stringify(parsedSubjects));
-      toast.success(`Synced ${parsedSubjects.length} courses (Local Mode)`);
+      toast.success(`Synced ${parsedSubjects.length} courses (Local Atelier Mode)`);
       navigate('/');
     } finally {
       setLoading(false);
@@ -79,7 +80,7 @@ export default function ERPParser() {
   };
 
   const handleClearAll = async () => {
-    if (!window.confirm('Are you sure you want to delete all saved subjects?')) return;
+    if (!window.confirm('Wipe all course records from your atelier?')) return;
     try {
       await api.delete('/subjects/all');
     } catch {
@@ -88,14 +89,14 @@ export default function ERPParser() {
     localStorage.removeItem('attendify_subjects');
     setParsedSubjects([]);
     setRawText('');
-    toast.success('All records cleared');
+    toast.success('Atelier storage wiped clean');
   };
 
   const audit = parsedSubjects.length > 0 ? codeRabbitAudit(parsedSubjects) : null;
 
-  // Separate Lectures and Labs from the parsed data
-  const lectures = useMemo(() => parsedSubjects.filter(s => s.type === 'Lecture'), [parsedSubjects]);
-  const labs = useMemo(() => parsedSubjects.filter(s => s.type === 'Lab'), [parsedSubjects]);
+  // Separate Theory Lectures and Practical Labs
+  const lectures = useMemo(() => parsedSubjects.filter((s) => s.type === 'Lecture'), [parsedSubjects]);
+  const labs = useMemo(() => parsedSubjects.filter((s) => s.type === 'Lab'), [parsedSubjects]);
 
   const displayedList = useMemo(() => {
     if (previewTab === 'lectures') return lectures;
@@ -105,76 +106,92 @@ export default function ERPParser() {
 
   return (
     <div className="container" style={{ padding: '36px 24px' }}>
-      <div style={{ marginBottom: '28px' }}>
-        <h1 style={{ fontSize: '1.9rem', display: 'flex', alignItems: 'center', gap: '10px' }}>
-          <ClipboardPaste color="var(--accent-secondary)" /> ERP Clipboard Parser
+      {/* Editorial Header */}
+      <div style={{ marginBottom: '28px', textAlign: 'center' }}>
+        <div className="atelier-badge">
+          <Feather size={13} color="var(--accent-blue)" />
+          Botanical Ingestion Chamber
+        </div>
+        <h1 style={{ fontSize: '2.8rem', marginBottom: '8px' }}>
+          ERP Clipboard <em>Ingestion</em>
         </h1>
-        <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', marginTop: '4px' }}>
-          Copy the attendance table directly from your university student portal. The system automatically categorizes
-          and separates <strong>Theory Lectures</strong> (1h) from <strong>Practical Labs</strong> (2h).
+        <p style={{ maxWidth: '640px', margin: '0 auto', fontSize: '0.95rem' }}>
+          Copy the raw attendance table directly from any student portal (<code>Ctrl+A</code>, <code>Ctrl+C</code>).
+          The engine automatically structures records and separates <strong>Theory Lectures (1h)</strong> from <strong>Practical Labs (2h)</strong>.
         </p>
       </div>
 
-      <div className="erp-paste-section">
+      {/* Parser Ingestion Card */}
+      <div className="parser-box">
         <textarea
+          className="parser-textarea"
           rows={6}
-          placeholder="Paste raw attendance text from ERP portal (Ctrl+V) or click 'Load Sample Data' below..."
+          placeholder="Paste raw attendance text from your ERP portal (Ctrl+V) or click 'Curate Sample Dataset' below..."
           value={rawText}
           onChange={(e) => setRawText(e.target.value)}
         />
 
-        <div className="erp-paste-actions" style={{ flexWrap: 'wrap' }}>
+        <div style={{ display: 'flex', gap: '12px', marginTop: '16px', flexWrap: 'wrap', alignItems: 'center' }}>
           <button onClick={() => handleParse()} className="btn btn-primary">
-            <ClipboardPaste size={15} style={{ marginRight: '6px' }} /> Parse & Separate Courses
+            <Feather size={15} /> Parse & Structure Courses
           </button>
-          <button onClick={handleSample} className="btn btn-secondary">
-            <FileText size={15} style={{ marginRight: '6px' }} /> Load Sample Data (12 Courses)
+          <button onClick={handleSample} className="btn btn-blush">
+            <Sparkles size={15} /> Curate Sample Dataset (12 Courses)
           </button>
           <button onClick={() => { setRawText(''); setParsedSubjects([]); }} className="btn btn-secondary">
             Clear Input
           </button>
           <button onClick={handleClearAll} className="btn btn-danger" style={{ marginLeft: 'auto' }}>
-            <Trash2 size={15} style={{ marginRight: '6px' }} /> Wipe Records
+            <Trash2 size={15} /> Wipe Atelier Records
           </button>
         </div>
       </div>
 
+      {/* Audit Banner */}
       {audit && (
         <div style={{ marginBottom: '24px' }}>
           <div
-            className={`audit-badge ${audit.verified ? 'verified' : 'error'}`}
-            style={{ marginBottom: '16px' }}
+            style={{
+              padding: '12px 20px',
+              borderRadius: 'var(--radius-pill)',
+              background: audit.verified ? 'var(--accent-sage-light)' : 'var(--accent-rose-light)',
+              color: audit.verified ? 'var(--accent-sage)' : 'var(--accent-rose)',
+              border: `1px solid ${audit.verified ? 'rgba(63, 123, 93, 0.3)' : 'rgba(200, 77, 91, 0.3)'}`,
+              fontSize: '0.82rem',
+              fontWeight: 600,
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '8px',
+            }}
           >
             <ShieldCheck size={16} />
-            <span>Data Verification: {audit.badge} ({audit.passCount}/{audit.totalChecks} checks passed)</span>
+            <span>Integrity Check: {audit.badge} ({audit.passCount}/{audit.totalChecks} checks passed)</span>
           </div>
         </div>
       )}
 
+      {/* Parsed Results Section */}
       {parsedSubjects.length > 0 && (
-        <div className="card fade-in" style={{ marginBottom: '32px', borderRadius: '40px', padding: '28px' }}>
-          {/* Header & Tab Controls for Lecture / Lab Separation */}
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', flexWrap: 'wrap', gap: '14px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
+        <div className="glass-panel" style={{ padding: '30px', marginBottom: '36px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '22px', flexWrap: 'wrap', gap: '14px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
               <button
                 onClick={() => setPreviewTab('all')}
-                className={`btn btn-sm ${previewTab === 'all' ? 'btn-primary' : 'btn-secondary'}`}
+                className={`target-pill ${previewTab === 'all' ? 'active' : ''}`}
               >
                 <Layers size={13} style={{ marginRight: '4px' }} /> All ({parsedSubjects.length})
               </button>
               <button
                 onClick={() => setPreviewTab('lectures')}
-                className={`btn btn-sm ${previewTab === 'lectures' ? 'btn-primary' : 'btn-secondary'}`}
-                style={{ border: previewTab === 'lectures' ? 'none' : '1px solid rgba(21, 88, 201, 0.4)' }}
+                className={`target-pill ${previewTab === 'lectures' ? 'active' : ''}`}
               >
-                <BookOpen size={13} style={{ marginRight: '4px' }} /> Theory Lectures ({lectures.length})
+                <BookOpen size={13} style={{ marginRight: '4px' }} /> Theory ({lectures.length})
               </button>
               <button
                 onClick={() => setPreviewTab('labs')}
-                className={`btn btn-sm ${previewTab === 'labs' ? 'btn-primary' : 'btn-secondary'}`}
-                style={{ border: previewTab === 'labs' ? 'none' : '1px solid rgba(212, 255, 36, 0.4)' }}
+                className={`target-pill ${previewTab === 'labs' ? 'active' : ''}`}
               >
-                <FlaskConical size={13} style={{ marginRight: '4px' }} /> Practical Labs ({labs.length})
+                <FlaskConical size={13} style={{ marginRight: '4px' }} /> Labs ({labs.length})
               </button>
             </div>
 
@@ -182,22 +199,21 @@ export default function ERPParser() {
               onClick={handleSync}
               disabled={loading}
               className="btn btn-primary"
-              style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
             >
               <UploadCloud size={16} />
-              {loading ? 'Syncing...' : 'Sync to Calculator'}
+              {loading ? 'Committing...' : 'Commit to Active Atelier'}
             </button>
           </div>
 
-          {/* Separated Preview Table */}
+          {/* Structured Table */}
           <div style={{ overflowX: 'auto' }}>
-            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.85rem' }}>
+            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.86rem' }}>
               <thead>
-                <tr style={{ borderBottom: '1px solid var(--border-color)', textAlign: 'left', color: 'var(--text-muted)' }}>
+                <tr style={{ borderBottom: '1px solid rgba(162, 187, 207, 0.35)', textAlign: 'left', color: 'var(--text-muted)' }}>
                   <th style={{ padding: '12px 10px' }}>Category</th>
-                  <th style={{ padding: '12px 10px' }}>Course Code</th>
-                  <th style={{ padding: '12px 10px' }}>Course Name</th>
-                  <th style={{ padding: '12px 10px' }}>Weight</th>
+                  <th style={{ padding: '12px 10px' }}>Code</th>
+                  <th style={{ padding: '12px 10px' }}>Course Title</th>
+                  <th style={{ padding: '12px 10px' }}>Slot Weight</th>
                   <th style={{ padding: '12px 10px' }}>Present</th>
                   <th style={{ padding: '12px 10px' }}>OD</th>
                   <th style={{ padding: '12px 10px' }}>Makeup</th>
@@ -205,7 +221,7 @@ export default function ERPParser() {
                   <th style={{ padding: '12px 10px' }}>Attended (A)</th>
                   <th style={{ padding: '12px 10px' }}>Total (T)</th>
                   <th style={{ padding: '12px 10px' }}>Percentage</th>
-                  <th style={{ padding: '12px 10px' }}>Status</th>
+                  <th style={{ padding: '12px 10px' }}>Standing</th>
                 </tr>
               </thead>
               <tbody>
@@ -217,55 +233,57 @@ export default function ERPParser() {
                     <tr
                       key={idx}
                       style={{
-                        borderBottom: '1px solid rgba(21, 88, 201, 0.15)',
-                        background: idx % 2 === 0 ? 'transparent' : 'rgba(21, 88, 201, 0.04)',
+                        borderBottom: '1px solid rgba(162, 187, 207, 0.2)',
+                        background: idx % 2 === 0 ? 'transparent' : 'rgba(255, 255, 255, 0.45)',
                       }}
                     >
                       <td style={{ padding: '12px 10px' }}>
                         <span
                           style={{
-                            padding: '3px 8px',
-                            borderRadius: '9999px',
-                            fontSize: '0.7rem',
-                            fontWeight: 800,
-                            background: isLab ? 'rgba(212, 255, 36, 0.12)' : 'rgba(21, 88, 201, 0.2)',
-                            color: isLab ? 'var(--accent-secondary)' : '#6da2ff',
-                            border: `1px solid ${isLab ? 'rgba(212, 255, 36, 0.3)' : 'rgba(21, 88, 201, 0.3)'}`,
+                            padding: '3px 10px',
+                            borderRadius: 'var(--radius-pill)',
+                            fontSize: '0.72rem',
+                            fontWeight: 700,
+                            background: isLab ? 'var(--accent-blush-light)' : 'var(--accent-blue-light)',
+                            color: isLab ? 'var(--accent-blush)' : 'var(--accent-blue)',
                           }}
                         >
-                          {isLab ? 'LAB' : 'THEORY'}
+                          {isLab ? 'LAB (2h)' : 'THEORY (1h)'}
                         </span>
                       </td>
-                      <td style={{ padding: '12px 10px', fontWeight: 800 }}>{s.code}</td>
+                      <td style={{ padding: '12px 10px', fontWeight: 700 }}>{s.code}</td>
                       <td style={{ padding: '12px 10px', color: 'var(--text-secondary)' }}>{s.name}</td>
                       <td style={{ padding: '12px 10px', color: 'var(--text-muted)' }}>{s.stepWeight}h</td>
                       <td style={{ padding: '12px 10px' }}>{s.present}</td>
                       <td style={{ padding: '12px 10px' }}>{s.od || 0}</td>
                       <td style={{ padding: '12px 10px' }}>{s.makeup || 0}</td>
                       <td style={{ padding: '12px 10px' }}>{s.absent}</td>
-                      <td style={{ padding: '12px 10px', fontWeight: 700, color: 'var(--accent-secondary)' }}>
+                      <td style={{ padding: '12px 10px', fontWeight: 700, color: 'var(--accent-blue)' }}>
                         {stats.attended}
                       </td>
                       <td style={{ padding: '12px 10px', fontWeight: 700 }}>{stats.totalConducted}</td>
                       <td
                         style={{
                           padding: '12px 10px',
-                          fontWeight: 800,
-                          color: isSafe ? 'var(--safe-zone)' : 'var(--shortage)',
+                          fontWeight: 700,
+                          color: isSafe ? 'var(--accent-sage)' : 'var(--accent-rose)',
                         }}
                       >
                         {stats.percentage}%
                       </td>
                       <td style={{ padding: '12px 10px' }}>
-                        {isSafe ? (
-                          <span style={{ color: 'var(--accent-secondary)', display: 'inline-flex', alignItems: 'center', gap: '4px', fontWeight: 600 }}>
-                            <CheckCircle2 size={14} /> Safe
-                          </span>
-                        ) : (
-                          <span style={{ color: 'var(--danger)', display: 'inline-flex', alignItems: 'center', gap: '4px', fontWeight: 600 }}>
-                            <AlertTriangle size={14} /> Shortage
-                          </span>
-                        )}
+                        <span
+                          style={{
+                            padding: '3px 8px',
+                            borderRadius: 'var(--radius-pill)',
+                            fontSize: '0.72rem',
+                            fontWeight: 600,
+                            background: isSafe ? 'var(--accent-sage-light)' : 'var(--accent-rose-light)',
+                            color: isSafe ? 'var(--accent-sage)' : 'var(--accent-rose)',
+                          }}
+                        >
+                          {isSafe ? 'Target Met' : 'Shortage'}
+                        </span>
                       </td>
                     </tr>
                   );
