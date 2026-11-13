@@ -1,14 +1,8 @@
 import React from 'react';
-import { NavLink, useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
-import { LogOut, LayoutDashboard, ClipboardPaste, CheckCircle2, Sparkles, Zap } from 'lucide-react';
+import { NavLink } from 'react-router-dom';
+import { LayoutDashboard, ClipboardPaste, CheckCircle2, Sparkles, Zap } from 'lucide-react';
 
 export default function Navbar() {
-  const { user, logout, isAuthenticated } = useAuth();
-  const navigate = useNavigate();
-
-  if (!isAuthenticated) return null;
-
   return (
     <nav className="navbar">
       <div className="navbar-inner">
@@ -45,20 +39,10 @@ export default function Navbar() {
         </div>
 
         <div className="navbar-user">
-          <span className="roll-badge">
-            {user?.rollNo || '24ESKIT059'} • {user?.name || 'Student'}
+          <span className="roll-badge" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+            <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'var(--accent-secondary)' }} />
+            Instant Access (Zero Login)
           </span>
-          <button
-            onClick={() => {
-              logout();
-              navigate('/login');
-            }}
-            className="btn btn-sm btn-secondary"
-            title="Log out"
-            style={{ display: 'flex', alignItems: 'center', gap: '6px' }}
-          >
-            <LogOut size={13} /> Exit
-          </button>
         </div>
       </div>
     </nav>

@@ -18,17 +18,17 @@ import {
 
 const RAW_SAMPLE_ERP = `SNo\tSubject Code\tSubject Name\tType\tPresent\tOD\tMakeup\tAbsent\tConducted\t%
 1\tCRT\tCRT Lab\tLab\t60\t0\t6\t22\t82\t80.49
-2\tITUL501\tSoftware Engineering\tLecture\t27\t0\t0\t14\t41\t65.85
-3\tITUL502\tComputer Networks\tLecture\t33\t0\t0\t9\t42\t78.57
-4\tITUL503\tOperating Systems\tLecture\t26\t0\t0\t14\t40\t65.00
-5\tITUL504\tTheory of Computation\tLecture\t25\t0\t0\t2\t27\t92.59
-6\tITUL511\tData Analytics\tLecture\t35\t0\t0\t5\t40\t87.50
-7\tITUP520\tSE Lab\tLab\t20\t0\t0\t8\t28\t71.43
-8\tITUP521\tCN Lab\tLab\t12\t0\t0\t16\t28\t42.86
-9\tITUP522\tOS Lab\tLab\t20\t0\t0\t6\t26\t76.92
-10\tITUP523\tTOC Lab\tLab\t22\t0\t0\t6\t28\t78.57
-11\tITUT530\tTutorial\tLab\t12\t0\t0\t2\t14\t85.71
-12\tMEUL560.2\tUniversal Human Values\tLecture\t25\t0\t0\t15\t40\t62.50`;
+2\tCS501\tSoftware Engineering\tLecture\t27\t0\t0\t14\t41\t65.85
+3\tCS502\tComputer Networks\tLecture\t33\t0\t0\t9\t42\t78.57
+4\tCS503\tOperating Systems\tLecture\t26\t0\t0\t14\t40\t65.00
+5\tCS504\tTheory of Computation\tLecture\t25\t0\t0\t2\t27\t92.59
+6\tCS511\tData Analytics\tLecture\t35\t0\t0\t5\t40\t87.50
+7\tCS520\tSE Lab\tLab\t20\t0\t0\t8\t28\t71.43
+8\tCS521\tCN Lab\tLab\t12\t0\t0\t16\t28\t42.86
+9\tCS522\tOS Lab\tLab\t20\t0\t0\t6\t26\t76.92
+10\tCS523\tTOC Lab\tLab\t22\t0\t0\t6\t28\t78.57
+11\tCS530\tTutorial\tLab\t12\t0\t0\t2\t14\t85.71
+12\tHU560\tUniversal Human Values\tLecture\t25\t0\t0\t15\t40\t62.50`;
 
 export default function ERPParser() {
   const [rawText, setRawText] = useState('');
@@ -110,7 +110,7 @@ export default function ERPParser() {
           <ClipboardPaste color="var(--accent-secondary)" /> ERP Clipboard Parser
         </h1>
         <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', marginTop: '4px' }}>
-          Copy the attendance table directly from your SKIT student portal. The system automatically categorizes
+          Copy the attendance table directly from your university student portal. The system automatically categorizes
           and separates <strong>Theory Lectures</strong> (1h) from <strong>Practical Labs</strong> (2h).
         </p>
       </div>
@@ -118,7 +118,7 @@ export default function ERPParser() {
       <div className="erp-paste-section">
         <textarea
           rows={6}
-          placeholder="Paste raw attendance text from ERP portal (Ctrl+V) or click 'Load SKIT Sample' below..."
+          placeholder="Paste raw attendance text from ERP portal (Ctrl+V) or click 'Load Sample Data' below..."
           value={rawText}
           onChange={(e) => setRawText(e.target.value)}
         />
@@ -128,7 +128,7 @@ export default function ERPParser() {
             <ClipboardPaste size={15} style={{ marginRight: '6px' }} /> Parse & Separate Courses
           </button>
           <button onClick={handleSample} className="btn btn-secondary">
-            <FileText size={15} style={{ marginRight: '6px' }} /> Load SKIT Sample (12 Courses)
+            <FileText size={15} style={{ marginRight: '6px' }} /> Load Sample Data (12 Courses)
           </button>
           <button onClick={() => { setRawText(''); setParsedSubjects([]); }} className="btn btn-secondary">
             Clear Input

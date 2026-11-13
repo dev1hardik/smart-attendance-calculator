@@ -22,7 +22,7 @@ export default function Login() {
   };
 
   const fillDemo = () => {
-    setEmail('hardik.24eskit059@skit.ac.in');
+    setEmail('demo@example.com');
     setPassword('attendify123');
   };
 
@@ -50,7 +50,7 @@ export default function Login() {
               </label>
               <input
                 type="email"
-                placeholder="name@skit.ac.in"
+                placeholder="student@university.edu"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
@@ -85,7 +85,7 @@ export default function Login() {
               className="btn btn-secondary"
               style={{ marginTop: '12px', width: '100%', fontSize: '0.825rem' }}
             >
-              Fill Demo Profile (Hardik Singhal • 24ESKIT059)
+              Fill Demo Profile (Hardik Singhal)
             </button>
           </form>
 

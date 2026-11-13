@@ -1,7 +1,7 @@
 // Smart ERP Attendance & Recovery Optimization Engine
 
 /**
- * Parse SKIT ERP clipboard text into structured subject data
+ * Parse University ERP clipboard text into structured subject data
  * Handles tab-separated values from ERP copy-paste
  */
 export function parseERPClipboard(rawText) {
@@ -99,7 +99,7 @@ export function parseERPClipboard(rawText) {
 
 /**
  * Calculate ERP statistics for a subject
- * SKIT ERP Formula:
+ * University ERP Formula:
  * A (Effective Attended) = Present + OD + Makeup
  * T (Total Conducted) = Present + OD + Absent (Makeup does NOT increase T)
  * C (Current %) = (A / T) × 100

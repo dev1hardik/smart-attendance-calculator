@@ -24,19 +24,19 @@ import {
   Check
 } from 'lucide-react';
 
-const SAMPLE_SKIT_DATA = [
+const SAMPLE_DATA = [
   { code: 'CRT', name: 'CRT Lab', type: 'Lab', stepWeight: 2, present: 60, od: 0, makeup: 6, absent: 22 },
-  { code: 'ITUL501', name: 'Software Engineering', type: 'Lecture', stepWeight: 1, present: 27, od: 0, makeup: 0, absent: 14 },
-  { code: 'ITUL502', name: 'Computer Networks', type: 'Lecture', stepWeight: 1, present: 33, od: 0, makeup: 0, absent: 9 },
-  { code: 'ITUL503', name: 'Operating Systems', type: 'Lecture', stepWeight: 1, present: 26, od: 0, makeup: 0, absent: 14 },
-  { code: 'ITUL504', name: 'Theory of Computation', type: 'Lecture', stepWeight: 1, present: 25, od: 0, makeup: 0, absent: 2 },
-  { code: 'ITUL511', name: 'Data Analytics', type: 'Lecture', stepWeight: 1, present: 35, od: 0, makeup: 0, absent: 5 },
-  { code: 'ITUP520', name: 'SE Lab', type: 'Lab', stepWeight: 2, present: 20, od: 0, makeup: 0, absent: 8 },
-  { code: 'ITUP521', name: 'CN Lab', type: 'Lab', stepWeight: 2, present: 12, od: 0, makeup: 0, absent: 16 },
-  { code: 'ITUP522', name: 'OS Lab', type: 'Lab', stepWeight: 2, present: 20, od: 0, makeup: 0, absent: 6 },
-  { code: 'ITUP523', name: 'TOC Lab', type: 'Lab', stepWeight: 2, present: 22, od: 0, makeup: 0, absent: 6 },
-  { code: 'ITUT530', name: 'Tutorial', type: 'Lab', stepWeight: 2, present: 12, od: 0, makeup: 0, absent: 2 },
-  { code: 'MEUL560.2', name: 'Universal Human Values', type: 'Lecture', stepWeight: 1, present: 25, od: 0, makeup: 0, absent: 15 }
+  { code: 'CS501', name: 'Software Engineering', type: 'Lecture', stepWeight: 1, present: 27, od: 0, makeup: 0, absent: 14 },
+  { code: 'CS502', name: 'Computer Networks', type: 'Lecture', stepWeight: 1, present: 33, od: 0, makeup: 0, absent: 9 },
+  { code: 'CS503', name: 'Operating Systems', type: 'Lecture', stepWeight: 1, present: 26, od: 0, makeup: 0, absent: 14 },
+  { code: 'CS504', name: 'Theory of Computation', type: 'Lecture', stepWeight: 1, present: 25, od: 0, makeup: 0, absent: 2 },
+  { code: 'CS511', name: 'Data Analytics', type: 'Lecture', stepWeight: 1, present: 35, od: 0, makeup: 0, absent: 5 },
+  { code: 'CS520', name: 'SE Lab', type: 'Lab', stepWeight: 2, present: 20, od: 0, makeup: 0, absent: 8 },
+  { code: 'CS521', name: 'CN Lab', type: 'Lab', stepWeight: 2, present: 12, od: 0, makeup: 0, absent: 16 },
+  { code: 'CS522', name: 'OS Lab', type: 'Lab', stepWeight: 2, present: 20, od: 0, makeup: 0, absent: 6 },
+  { code: 'CS523', name: 'TOC Lab', type: 'Lab', stepWeight: 2, present: 22, od: 0, makeup: 0, absent: 6 },
+  { code: 'CS530', name: 'Tutorial', type: 'Lab', stepWeight: 2, present: 12, od: 0, makeup: 0, absent: 2 },
+  { code: 'HU560', name: 'Universal Human Values', type: 'Lecture', stepWeight: 1, present: 25, od: 0, makeup: 0, absent: 15 }
 ];
 
 export default function Dashboard() {
@@ -69,8 +69,8 @@ export default function Dashboard() {
       if (stored) {
         setSubjects(JSON.parse(stored));
       } else {
-        setSubjects(SAMPLE_SKIT_DATA);
-        localStorage.setItem('attendify_subjects', JSON.stringify(SAMPLE_SKIT_DATA));
+        setSubjects(SAMPLE_DATA);
+        localStorage.setItem('attendify_subjects', JSON.stringify(SAMPLE_DATA));
       }
     } finally {
       setLoading(false);
@@ -149,13 +149,13 @@ export default function Dashboard() {
   const loadSampleData = async () => {
     try {
       setLoading(true);
-      await api.post('/subjects/bulk-import', { subjects: SAMPLE_SKIT_DATA });
-      toast.success('Loaded 12 SKIT Subjects!');
+      await api.post('/subjects/bulk-import', { subjects: SAMPLE_DATA });
+      toast.success('Loaded 12 Sample Subjects!');
       await fetchSubjects();
     } catch {
-      setSubjects(SAMPLE_SKIT_DATA);
-      localStorage.setItem('attendify_subjects', JSON.stringify(SAMPLE_SKIT_DATA));
-      toast.success('Loaded 12 SKIT Subjects (Local Storage)');
+      setSubjects(SAMPLE_DATA);
+      localStorage.setItem('attendify_subjects', JSON.stringify(SAMPLE_DATA));
+      toast.success('Loaded 12 Sample Subjects (Local Storage)');
       setLoading(false);
     }
   };
@@ -557,7 +557,7 @@ export default function Dashboard() {
           </p>
           <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
             <button onClick={loadSampleData} className="btn btn-primary">
-              <Sparkles size={16} style={{ marginRight: '8px' }} /> Load Verified SKIT ERP Data (12 Subjects)
+              <Sparkles size={16} style={{ marginRight: '8px' }} /> Load Verified Sample Data (12 Subjects)
             </button>
             <Link to="/parser" className="btn btn-secondary">
               <ClipboardPaste size={16} style={{ marginRight: '8px' }} /> Paste Raw ERP Clipboard

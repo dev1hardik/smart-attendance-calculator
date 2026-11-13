@@ -19,20 +19,12 @@ api.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// Response Interceptor: Handle unauthenticated responses
+// Response Interceptor: Graceful error pass-through (No login redirect)
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response && error.response.status === 401) {
-      localStorage.removeItem('attendify_token');
-      localStorage.removeItem('attendify_user');
-      if (window.location.pathname !== '/login' && window.location.pathname !== '/signup') {
-        window.location.href = '/login';
-      }
-    }
     return Promise.reject(error);
   }
 );
 
 export default api;
-

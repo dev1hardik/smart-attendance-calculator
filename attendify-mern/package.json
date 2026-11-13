@@ -14,6 +14,6 @@
   "devDependencies": {
     "concurrently": "^9.0.1"
   },
-  "author": "Hardik Singhal (24ESKIT059)",
+  "author": "Hardik Singhal",
   "license": "MIT"
 }

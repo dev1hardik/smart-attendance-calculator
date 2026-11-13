@@ -5,8 +5,8 @@ import { User, Hash, Mail, Lock, ArrowRight, Zap } from 'lucide-react';
 
 export default function Signup() {
   const [name, setName] = useState('Hardik Singhal');
-  const [rollNo, setRollNo] = useState('24ESKIT059');
-  const [email, setEmail] = useState('hardik.24eskit059@skit.ac.in');
+  const [rollNo, setRollNo] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('attendify123');
   const [loading, setLoading] = useState(false);
   const { signup } = useAuth();
@@ -57,11 +57,11 @@ export default function Signup() {
             <div className="form-group">
               <label>
                 <Hash size={14} style={{ display: 'inline', marginRight: '6px' }} />
-                College Roll Number
+                Student ID / Roll Number
               </label>
               <input
                 type="text"
-                placeholder="24ESKIT059"
+                placeholder="e.g. STU-2024-001"
                 value={rollNo}
                 onChange={(e) => setRollNo(e.target.value)}
                 required
@@ -75,7 +75,7 @@ export default function Signup() {
               </label>
               <input
                 type="email"
-                placeholder="hardik@skit.ac.in"
+                placeholder="student@university.edu"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required

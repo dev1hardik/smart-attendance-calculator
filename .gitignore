@@ -29,3 +29,7 @@ Thumbs.db
 .gemini/
 .gsd/
 
+# Local submission artifacts and generators
+output/
+generate_full_submission.py
+

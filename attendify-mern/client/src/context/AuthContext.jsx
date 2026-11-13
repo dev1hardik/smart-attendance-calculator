@@ -51,10 +51,10 @@ export function AuthProvider({ children }) {
       if (err.code === 'ERR_NETWORK' || !err.response) {
         // Offline / Demo fallback
         const demoUser = {
-          id: 'demo-hardik-59',
+          id: 'demo-user-hardik',
           name: 'Hardik Singhal',
-          rollNo: '24ESKIT059',
-          email: email || 'hardik.24eskit059@skit.ac.in',
+          studentId: 'STU-1001',
+          email: email || 'hardik@example.com',
           targetCriteria: 75,
         };
         const demoToken = 'demo-jwt-token-attendify';
